@@ -56,11 +56,15 @@
         triggerHtml = settings.triggerTemplate(sel.find(':selected'));
         return trigger.html(triggerHtml);
       };
-      sel.on('blur.fs', function() {
+     sel.on('blur.fs', function() {
         if (trigger.hasClass('open')) {
-          return setTimeout(function() {
-            return trigger.trigger('close.fs');
-          }, 120);
+            if (!options.is(':hover')) {                        
+                return setTimeout(function() {
+                    return trigger.trigger('close.fs');
+                }, 120);
+            } else {                
+                sel.focus();
+            }
         }
       });
       trigger.on('close.fs', function() {
@@ -140,7 +144,7 @@
             trigger.trigger('click.fs');
           } else if (w === 13 || w === 32) {
             e.preventDefault();
-            hovered.trigger('mousedown.fs');
+            hovered.trigger('click.fs');
           } else if (w === 9) {
             if (trigger.hasClass('open')) {
               trigger.trigger('close.fs');
@@ -153,7 +157,7 @@
           }
         }
       });
-      options.on('mousedown.fs', 'li', function(e) {
+      options.on('click.fs', 'li', function(e) {
         var clicked;
         clicked = $(this);
         sel.val(clicked.data('raw-value'));
@@ -163,6 +167,7 @@
         options.find('.selected').removeClass('selected');
         clicked.addClass('selected');
         trigger.addClass('selected');
+        trigger.trigger('close.fs');
         return sel.val(clicked.data('raw-value')).trigger('change.fs').trigger('blur.fs').trigger('focus.fs');
       });
       options.on('mouseenter.fs', 'li', function() {
